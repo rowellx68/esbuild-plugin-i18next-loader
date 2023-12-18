@@ -12,6 +12,7 @@ jobs:
       contents: write
       packages: write
       pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -44,7 +45,7 @@ jobs:
         with:
           title: 'Version packages'
           commit: 'chore: version packages'
-          publish: npm run ci:publish-packages
+          publish: npm run ci:publish-package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
