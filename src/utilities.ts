@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import merge from 'ts-deepmerge'
 import { setProperty } from 'dot-prop'
-import { globSync } from 'glob'
+import { globSync } from 'fast-glob'
 import type { OnLoadResult, PartialMessage } from 'esbuild'
 import { name as pluginName } from '../package.json'
 
@@ -54,7 +54,7 @@ const findAllFiles = (globs: string | string[], cwd: string): string[] => {
   const globArray = Array.isArray(globs) ? globs : [globs]
 
   return globArray
-    .map((g) => globSync(g, { cwd, realpath: true }))
+    .map((g) => globSync(g, { cwd }))
     .reduce((acc, val) => acc.concat(val), [])
 }
 
