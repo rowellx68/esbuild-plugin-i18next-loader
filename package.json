@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
-    "lint": "eslint ./src --max-warnings 0"
+    "lint": "eslint ./src --max-warnings 0",
+    "ci:publish-package": "npm run build && changeset version && changeset publish"
   },
   "keywords": [
     "esbuild",
