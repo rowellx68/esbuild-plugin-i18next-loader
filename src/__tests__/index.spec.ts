@@ -3,13 +3,18 @@ import path from 'node:path'
 import i18nexPlugin from '../index'
 import esbuild from 'esbuild'
 
-test('no module resolution', async () => {
+test.each([
+  { include: ['**/*.json'] },
+  { include: ['**/*.yml', '**/*.yaml'] },
+  { include: undefined },
+])('no module resolution: %s', async ({ include }) => {
   const result = await esbuild.build({
     entryPoints: [path.resolve(__dirname, '__fixtures__/component.ts')],
     bundle: true,
     write: false,
     plugins: [
       i18nexPlugin({
+        include: include,
         paths: [path.resolve(__dirname, '__fixtures__/locales')],
       }),
     ],
@@ -18,13 +23,18 @@ test('no module resolution', async () => {
   expect(result).toMatchSnapshot()
 })
 
-test('basename', async () => {
+test.each([
+  { include: ['**/*.json'] },
+  { include: ['**/*.yml', '**/*.yaml'] },
+  { include: undefined },
+])('basename: %s', async ({ include }) => {
   const result = await esbuild.build({
     entryPoints: [path.resolve(__dirname, '__fixtures__/component.ts')],
     bundle: true,
     write: false,
     plugins: [
       i18nexPlugin({
+        include: include,
         namespaceResolution: 'basename',
         paths: [path.resolve(__dirname, '__fixtures__/locales')],
       }),
@@ -34,13 +44,18 @@ test('basename', async () => {
   expect(result).toMatchSnapshot()
 })
 
-test('relativePath', async () => {
+test.each([
+  { include: ['**/*.json'] },
+  { include: ['**/*.yml', '**/*.yaml'] },
+  { include: undefined },
+])('relativePath: %s', async ({ include }) => {
   const result = await esbuild.build({
     entryPoints: [path.resolve(__dirname, '__fixtures__/component.ts')],
     bundle: true,
     write: false,
     plugins: [
       i18nexPlugin({
+        include: include,
         namespaceResolution: 'relativePath',
         paths: [path.resolve(__dirname, '__fixtures__/locales')],
       }),
