@@ -1,5 +1,13 @@
 # esbuild-plugin-i18next-loader
 
+## 1.0.1
+
+### Patch Changes
+
+- [`fd9d30b`](https://github.com/rowellx68/esbuild-plugin-i18next-loader/commit/fd9d30b230dc8f6b5b5938de61577155f62c2d6b) Thanks [@rowellx68](https://github.com/rowellx68)! - Fix build
+
+  Dependencies were not bundled in the build.
+
 ## 1.0.0
 
 ### Major Changes
