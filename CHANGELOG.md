@@ -1,5 +1,11 @@
 # esbuild-plugin-i18next-loader
 
+## 1.0.2
+
+### Patch Changes
+
+- [`5221228`](https://github.com/rowellx68/esbuild-plugin-i18next-loader/commit/5221228cd026849d17798dfb090916dea004fcfc) Thanks [@rowellx68](https://github.com/rowellx68)! - Change build format to cjs
+
 ## 1.0.1
 
 ### Patch Changes
