@@ -8,4 +8,44 @@ esbuild plugin to client bundle i18next locales.
 
 This plugin generates a virtual module that contains all the locales that are available in the project.
 
-It is a partial rewrite of [alienfast/vite-plugin-i18next-loader](https://github.com/alienfast/vite-plugin-i18next-loader) to work with esbuild.
+It is a rewrite of [alienfast/vite-plugin-i18next-loader](https://github.com/alienfast/vite-plugin-i18next-loader) to work with esbuild.
+
+## Install
+
+```bash
+npm install --save-dev esbuild-plugin-i18next-loader
+
+# or
+pnpm add -D esbuild-plugin-i18next-loader
+
+# or
+yarn add -D esbuild-plugin-i18next-loader
+```
+
+## Options
+
+| Name                  | Type                                           | Default                                  | Description                                     |
+| --------------------- | ---------------------------------------------- | ---------------------------------------- | ----------------------------------------------- |
+| `include`             | `('**/*.json' \| '**/*.yml' \| '**/*.yaml')[]` | `['**/*.json', '**/*.yml', '**/*.yaml']` | Glob patterns of files to include for bundling. |
+| `namespaceResolution` | `basename`, `relativePath`                     | none                                     | Namespace resolution strategy.                  |
+| `paths`               | `string[]`                                     | `[]`                                     | Locale top-level directory paths.               |
+
+## Usage with esbuild
+
+```js
+await esbuild.build({
+  entryPoints: ["./src/index.ts"],
+  write: true,
+  bundle: true,
+  plugins: [
+    i18nexPlugin({
+      namespaceResolution: "basename",
+      paths: ["./src/**/locales"],
+    }),
+  ],
+});
+```
+
+## LICENSE
+
+MIT
