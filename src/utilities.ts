@@ -7,24 +7,29 @@ import YAML from 'yaml'
 import type { OnLoadResult, PartialMessage } from 'esbuild'
 import { name as pluginName } from '../package.json'
 
+export type IncludePattern = '**/*.json' | '**/*.yml' | '**/*.yaml'
+
 export type Options = {
   /**
    * Glob pattern to include files for bundling. Defaults to `['**\/*.json', '**\/*.yml', '**\/*.yaml']`.
    */
-  include?: string[];
+  include?: IncludePattern[]
 
   /**
    * Namespace resolution strategy. Defaults to `'none'`.
    */
-  namespaceResolution?: 'basename' | 'relativePath';
+  namespaceResolution?: 'basename' | 'relativePath'
 
   /**
    * Locale top-level directory paths. Ordered from least to most specific.
    */
-  paths: string[];
+  paths: string[]
 }
 
 type ResourceBundle = { [key: string]: string | object }
+
+const defaultIncludes: IncludePattern[] = ['**/*.json', '**/*.yml', '**/*.yaml']
+const allowedExtensions = ['.json', '.yml', '.yaml']
 
 const resolvePaths = (paths: string[], cwd: string): string[] =>
   paths.map((p) => (path.isAbsolute(p) ? p : path.resolve(cwd, p)))
@@ -63,6 +68,21 @@ const enumerateLanguages = (directory: string): string[] =>
 export const loadContent = (options: Options): OnLoadResult => {
   const directories = resolvePaths(options.paths, process.cwd())
   const warnings = assertExistence(directories)
+  const uniqueIncludes = Array.from(new Set(options.include ?? defaultIncludes))
+
+  if (options.paths.length === 0) {
+    warnings.push({
+      pluginName,
+      text: 'Empty paths passed in the plugin options',
+    })
+  }
+
+  if (uniqueIncludes.length === 0) {
+    warnings.push({
+      pluginName,
+      text: 'Empty includes passed in the plugin options',
+    })
+  }
 
   let allLanguages: Set<string> = new Set()
   let appResourceBundle: ResourceBundle = {}
@@ -77,10 +97,7 @@ export const loadContent = (options: Options): OnLoadResult => {
       resourceBundle[language] = {}
 
       const languageDirectory = path.join(directory, language)
-      const files = findAllFiles(
-        options.include ?? ['**/*.json', '**/*.yml', '**/*.yaml'],
-        languageDirectory
-      )
+      const files = findAllFiles(uniqueIncludes, languageDirectory)
 
       for (const file of files) {
         const fullPath = path.resolve(directory, language, file)
@@ -98,11 +115,24 @@ export const loadContent = (options: Options): OnLoadResult => {
           continue
         }
 
+        if (!allowedExtensions.includes(extension)) {
+          warnings.push({
+            pluginName,
+            text: 'File extension not supported',
+            location: {
+              file: fullPath,
+            },
+          })
+
+          continue
+        }
+
         const fileContent = fs.readFileSync(fullPath, 'utf8')
 
-        const content = extension === '.json'
-          ? JSON.parse(String(fileContent))
-          : YAML.parse(String(fileContent))
+        const content =
+          extension === '.json'
+            ? JSON.parse(String(fileContent))
+            : YAML.parse(String(fileContent))
 
         if (options.namespaceResolution) {
           let namespaceFilePath = file
