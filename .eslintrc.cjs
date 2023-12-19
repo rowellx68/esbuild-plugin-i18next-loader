@@ -15,8 +15,6 @@ module.exports = {
     },
   },
   globals: {
-    __dirname: true,
-    __filename: true,
     process: true,
   },
   ignorePatterns: [

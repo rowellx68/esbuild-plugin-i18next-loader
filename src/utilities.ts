@@ -83,7 +83,7 @@ export const loadContent = (options: Options): OnLoadResult => {
       )
 
       for (const file of files) {
-        const fullPath = path.resolve(__dirname, directory, language, file)
+        const fullPath = path.resolve(directory, language, file)
         const extension = path.extname(file)
 
         if (!fs.existsSync(fullPath)) {
