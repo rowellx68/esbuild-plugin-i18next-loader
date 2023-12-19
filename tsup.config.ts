@@ -5,6 +5,7 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
+  bundle: true,
   format: ['esm'],
   banner: {
     js: '// esbuild-plugin-i18next-loader',
