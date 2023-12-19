@@ -6,8 +6,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   bundle: true,
-  format: ['esm'],
-  banner: {
-    js: '// esbuild-plugin-i18next-loader',
-  },
+  format: ['cjs'],
 })

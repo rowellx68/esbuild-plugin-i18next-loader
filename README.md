@@ -33,12 +33,14 @@ yarn add -D esbuild-plugin-i18next-loader
 ## Usage with esbuild
 
 ```js
+import { i18nextPlugin } from "esbuild-plugin-i18next-loader";
+
 await esbuild.build({
   entryPoints: ["./src/index.ts"],
   write: true,
   bundle: true,
   plugins: [
-    i18nexPlugin({
+    i18nextPlugin({
       namespaceResolution: "basename",
       paths: ["./src/**/locales"],
     }),

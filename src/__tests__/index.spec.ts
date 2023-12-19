@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import { test, expect } from 'vitest'
 import path from 'node:path'
-import i18nexPlugin from '../index'
 import esbuild from 'esbuild'
-import { IncludePattern } from '../utilities'
+import { i18nextPlugin } from '../index'
+import { type IncludePattern } from '../utilities'
 
 test.each([
   { include: ['**/*.json'] as IncludePattern[] as IncludePattern[] },
@@ -15,7 +15,7 @@ test.each([
     bundle: true,
     write: false,
     plugins: [
-      i18nexPlugin({
+      i18nextPlugin({
         include: include,
         paths: [path.resolve(__dirname, '__fixtures__/locales')],
       }),
@@ -35,7 +35,7 @@ test.each([
     bundle: true,
     write: false,
     plugins: [
-      i18nexPlugin({
+      i18nextPlugin({
         include: include,
         namespaceResolution: 'basename',
         paths: [path.resolve(__dirname, '__fixtures__/locales')],
@@ -56,7 +56,7 @@ test.each([
     bundle: true,
     write: false,
     plugins: [
-      i18nexPlugin({
+      i18nextPlugin({
         include: include,
         namespaceResolution: 'relativePath',
         paths: [path.resolve(__dirname, '__fixtures__/locales')],
@@ -77,7 +77,7 @@ test.each([
     bundle: true,
     write: false,
     plugins: [
-      i18nexPlugin({
+      i18nextPlugin({
         include: include,
         namespaceResolution: 'relativePath',
         paths: [],
@@ -94,7 +94,7 @@ test('empty includes', async () => {
     bundle: true,
     write: false,
     plugins: [
-      i18nexPlugin({
+      i18nextPlugin({
         include: [],
         namespaceResolution: 'relativePath',
         paths: [path.resolve(__dirname, '__fixtures__/locales')],

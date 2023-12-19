@@ -4,7 +4,6 @@
   "description": "esbuild plugin to client bundle i18next locales.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rowellx68/esbuild-plugin-i18next-loader"

@@ -3,7 +3,7 @@ import { name as pluginName } from '../package.json'
 import { type Options, loadContent } from './utilities'
 import './types'
 
-export default (options: Options): Plugin => {
+export const i18nextPlugin = (options: Options): Plugin => {
   return {
     name: pluginName,
     setup(build) {
