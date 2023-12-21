@@ -104,3 +104,19 @@ test('empty includes', async () => {
 
   expect(result).toMatchSnapshot()
 })
+
+test('throws exception when deserialising fails', async () => {
+  const throwsError = async () => await esbuild.build({
+    entryPoints: [path.resolve(__dirname, '__fixtures__/component.ts')],
+    bundle: true,
+    write: false,
+    plugins: [
+      i18nextPlugin({
+        namespaceResolution: 'relativePath',
+        paths: [path.resolve(__dirname, '__failing_fixtures__/locales')],
+      }),
+    ],
+  })
+
+  await expect(throwsError).rejects.toThrowErrorMatchingSnapshot()
+})

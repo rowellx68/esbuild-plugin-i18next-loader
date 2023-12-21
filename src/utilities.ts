@@ -13,22 +13,26 @@ export type Options = {
   /**
    * Glob pattern to include files for bundling. Defaults to `['**\/*.json', '**\/*.yml', '**\/*.yaml']`.
    */
-  include?: IncludePattern[]
+  include?: IncludePattern[];
 
   /**
    * Namespace resolution strategy. Defaults to `'none'`.
    */
-  namespaceResolution?: 'basename' | 'relativePath'
+  namespaceResolution?: 'basename' | 'relativePath';
 
   /**
    * Locale top-level directory paths. Ordered from least to most specific.
    */
-  paths: string[]
+  paths: string[];
 }
 
 type ResourceBundle = { [key: string]: string | object }
 
-const defaultIncludes: IncludePattern[] = ['**/*.json', '**/*.yml', '**/*.yaml']
+const defaultIncludes: IncludePattern[] = [
+  '**/*.json',
+  '**/*.yml',
+  '**/*.yaml',
+]
 const allowedExtensions = ['.json', '.yml', '.yaml']
 
 const resolvePaths = (paths: string[], cwd: string): string[] =>
@@ -68,7 +72,11 @@ const enumerateLanguages = (directory: string): string[] =>
 export const loadContent = (options: Options): OnLoadResult => {
   const directories = resolvePaths(options.paths, process.cwd())
   const warnings = assertExistence(directories)
-  const uniqueIncludes = Array.from(new Set(options.include ?? defaultIncludes))
+  const errors: PartialMessage[] = []
+  const uniqueIncludes = Array.from(
+    new Set(options.include ?? defaultIncludes)
+  )
+  const watchedFiles: string[] = []
 
   if (options.paths.length === 0) {
     warnings.push({
@@ -129,36 +137,49 @@ export const loadContent = (options: Options): OnLoadResult => {
 
         const fileContent = fs.readFileSync(fullPath, 'utf8')
 
-        const content =
-          extension === '.json'
-            ? JSON.parse(String(fileContent))
-            : YAML.parse(String(fileContent))
+        try {
+          const content =
+            extension === '.json'
+              ? JSON.parse(String(fileContent))
+              : YAML.parse(String(fileContent))
 
-        if (options.namespaceResolution) {
-          let namespaceFilePath = file
+          watchedFiles.push(fullPath)
 
-          if (options.namespaceResolution === 'basename') {
-            namespaceFilePath = path.basename(file)
-          } else if (options.namespaceResolution === 'relativePath') {
-            namespaceFilePath = path.relative(
-              path.join(directory, language),
-              file
-            )
+          if (options.namespaceResolution) {
+            let namespaceFilePath = file
+
+            if (options.namespaceResolution === 'basename') {
+              namespaceFilePath = path.basename(file)
+            } else if (options.namespaceResolution === 'relativePath') {
+              namespaceFilePath = path.relative(
+                path.join(directory, language),
+                file
+              )
+            }
+
+            const nsparts = namespaceFilePath
+              .replace(extension, '')
+              .split(path.sep)
+              .filter((part) => part !== '' && part !== '..')
+
+            const namespace = [language].concat(nsparts).join('.')
+
+            setProperty(resourceBundle, namespace, content)
+          } else {
+            resourceBundle[language] = content
           }
 
-          const nsparts = namespaceFilePath
-            .replace(extension, '')
-            .split(path.sep)
-            .filter((part) => part !== '' && part !== '..')
-
-          const namespace = [language].concat(nsparts).join('.')
-
-          setProperty(resourceBundle, namespace, content)
-        } else {
-          resourceBundle[language] = content
+          appResourceBundle = merge(appResourceBundle, resourceBundle)
+        } catch (exception) {
+          errors.push({
+            pluginName,
+            text: (exception as Error).message,
+            location: {
+              file: fullPath,
+            },
+            detail: exception,
+          })
         }
-
-        appResourceBundle = merge(appResourceBundle, resourceBundle)
       }
     }
   }
@@ -166,5 +187,7 @@ export const loadContent = (options: Options): OnLoadResult => {
   return {
     contents: `export default ${JSON.stringify(appResourceBundle)}`,
     warnings: warnings,
+    errors: errors,
+    watchFiles: watchedFiles,
   }
 }
