@@ -1,5 +1,11 @@
 # esbuild-plugin-i18next-loader
 
+## 1.0.3
+
+### Patch Changes
+
+- [`04ed80c`](https://github.com/rowellx68/esbuild-plugin-i18next-loader/commit/04ed80cc0a1f3517d48f43e882d2c5b09dbe56c2) Thanks [@rowellx68](https://github.com/rowellx68)! - Add watchedFiles and catch exceptions
+
 ## 1.0.2
 
 ### Patch Changes
