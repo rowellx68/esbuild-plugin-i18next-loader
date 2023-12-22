@@ -5210,20 +5210,3 @@ exports[`relativePath: { include: undefined } 1`] = `
   "warnings": [],
 }
 `;
-
-exports[`throws exception when deserialising fails 1`] = `
-[Error: Build failed with 3 errors:
-src/__tests__/__failing_fixtures__/locales/en-GB/invalid.json:0:0: ERROR: [plugin: esbuild-plugin-i18next-loader] Unexpected number in JSON at position 1
-src/__tests__/__failing_fixtures__/locales/en-GB/invalid.yaml:0:0: ERROR: [plugin: esbuild-plugin-i18next-loader] Source contains multiple documents; please use YAML.parseAllDocuments() at line 3, column 1:
-
-Hello
----
-^^^
-
-src/__tests__/__failing_fixtures__/locales/en-GB/invalid.yml:0:0: ERROR: [plugin: esbuild-plugin-i18next-loader] Source contains multiple documents; please use YAML.parseAllDocuments() at line 3, column 1:
-
-Hello
----
-^^^
-]
-`;

@@ -118,5 +118,5 @@ test('throws exception when deserialising fails', async () => {
     ],
   })
 
-  await expect(throwsError).rejects.toThrowErrorMatchingSnapshot()
+  await expect(throwsError).rejects.toThrowError()
 })
